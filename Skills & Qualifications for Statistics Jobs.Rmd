@@ -1,0 +1,315 @@
+---
+title: "Skills & Qualifications for Statistics Jobs"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+# Hard Skills
+
+## Column {data-width="350"}
+
+### 
+
+Highest Education Qualification Required
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+#install.packages("devtools")
+devtools::install_github("thiyangt/DSjobtracker")
+library(DSjobtracker)
+library(skimr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(ggradar)
+library(patchwork)
+drop <- c("ID","Consultant", "DateRetrieved", "DatePublished", "Company", "Payment Frequency", "Search_Term", "URL","Knowledge_in","City","Educational_qualifications")
+DStidy_new <- DStidy[ , !(names(DStidy) %in% drop)]
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE,out.width="150%"}
+c1 <- sum(DStidy_new$BSc_needed==1 & DStidy_new$MSc_needed==0 & DStidy_new$PhD_needed==0,na.rm = TRUE)
+c2 <- sum(DStidy_new$BSc_needed==0 & DStidy_new$MSc_needed==1 & DStidy_new$PhD_needed==0,na.rm = TRUE)
+c3 <- sum(DStidy_new$BSc_needed==0 & DStidy_new$MSc_needed==0 & DStidy_new$PhD_needed==1,na.rm = TRUE)
+
+c4 <- sum(DStidy_new$BSc_needed==1 & DStidy_new$MSc_needed==1 & DStidy_new$PhD_needed==0,na.rm = TRUE)
+
+c5 <- sum(DStidy_new$BSc_needed==1 & DStidy_new$MSc_needed==0 & DStidy_new$PhD_needed==1,na.rm = TRUE)
+c6 <- sum(DStidy_new$BSc_needed==0 & DStidy_new$MSc_needed==1 & DStidy_new$PhD_needed==1,na.rm = TRUE)
+c7 <- sum(DStidy_new$BSc_needed==1 & DStidy_new$MSc_needed==1 & DStidy_new$PhD_needed==1,na.rm = TRUE)
+
+cnt <- c(c1,c2+c4,c3+c5+c6+c7)
+category <- c("BSc", "MSc","PhD")
+
+df1 <- data.frame(category, cnt)
+
+df1 <- df1  %>%
+  mutate(pct = cnt / sum(cnt),
+         pctlabel = paste0(round(pct*100), "%"))
+
+
+ggplot(df1, 
+       aes(x = reorder(category,cnt),
+           y = cnt)) + 
+  geom_bar(stat = "identity", 
+           fill = "indianred3", 
+           color = "black") +
+  geom_text(aes(label = pctlabel), 
+            vjust = -0.25) +
+  labs(x = "Category", 
+       y = "Count")  +
+  coord_flip()+ theme(axis.title.x = element_blank())
+```
+
+### Highest Education Qualification based of the job Category
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+d1 <- DStidy_new  %>% filter(BSc_needed %in% 1)  %>% group_by(Job_Category) %>% count(BSc_needed)
+d1 <- d1[,-2]
+colnames(d1) <- c("Category", "BSc")
+#View(d1)
+
+d2 <- DStidy_new  %>% filter(MSc_needed %in% 1)  %>% group_by(Job_Category) %>% count(MSc_needed)
+d2 <- d2[,-2]
+colnames(d2) <- c("Category", "MSc")
+#View(d2)
+
+d3 <- DStidy_new  %>% filter(PhD_needed %in% 1)  %>% group_by(Job_Category) %>% count(PhD_needed)
+d3 <- d3[,-2]
+colnames(d3) <- c("Category", "PhD")
+#View(d3)
+
+df2 <- merge(d1, d2, by ="Category")
+df2 <- merge(df2, d3, by ="Category", all = TRUE)
+#View(df2)
+
+df2 <- df2[-c(4,5),]
+df2[is.na(df2)] <- 0
+
+
+ggradar(
+  df2, 
+  values.radar = c("0", "20", "55"),
+  grid.min = 0, grid.mid = 20, grid.max = 55,
+  # Polygons
+  group.line.width = 1, 
+  group.point.size = 3,
+  # Background and grid lines
+  background.circle.colour = "white",
+  gridline.mid.colour = "grey"
+  ) + theme(legend.position = "bottom")
+
+```
+
+## Column {data-width="350"}
+
+### Statistical Software Skills
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE,out.width="150%"}
+ 
+df5 <- DStidy_new  %>% filter(year %in% 2020)
+
+ss1 <- sum(df5$`Ms Excel`==1 & df5$R ==0 & df5$SPSS ==0 & df5$Python ==0,na.rm = TRUE)
+ss2 <- sum(df5$`Ms Excel`==0 & df5$R ==0 & df5$SPSS ==1 & df5$Python ==0,na.rm = TRUE)
+ss3 <- sum(df5$`Ms Excel`==0 & df5$R ==1 & df5$SPSS ==0 & df5$Python ==0,na.rm = TRUE)
+ss4 <- sum(df5$`Ms Excel`==0 & df5$R ==0 & df5$SPSS ==0 & df5$Python ==1,na.rm = TRUE)
+
+ss5 <- sum(df5$R ==1 & df5$SPSS ==0 & df5$Python ==1,na.rm = TRUE)
+ss6 <- sum(df5$R ==1 & df5$SPSS ==1 & df5$Python ==1,na.rm = TRUE)
+
+df6 <- DStidy_new  %>% filter(year %in% 2021) 
+
+ss11 <- sum(df6$`Ms Excel`==1 & df6$R ==0 & df6$SPSS ==0 & df6$Python ==0,na.rm = TRUE)
+ss22 <- sum(df6$`Ms Excel`==0 & df6$R ==0 & df6$SPSS ==1 & df6$Python ==0,na.rm = TRUE)
+ss33 <- sum(df6$`Ms Excel`==0 & df6$R ==1 & df6$SPSS ==0 & df6$Python ==0,na.rm = TRUE)
+ss44 <- sum(df6$`Ms Excel`==0 & df6$R ==0 & df6$SPSS ==0 & df6$Python ==1,na.rm = TRUE)
+
+ss55 <- sum(df6$R ==1 & df6$SPSS ==0 & df6$Python ==1,na.rm = TRUE)
+ss66 <- sum(df6$R ==1 & df6$SPSS ==1 & df6$Python ==1,na.rm = TRUE)
+
+Year_2020 <- c(ss1,ss2,ss3,ss4,ss5,ss6)
+Year_2021 <- c(ss11,ss22,ss33,ss44,ss55,ss66)
+Statistical_software <- c("Excel Only", "SPSS Only","R Only","Python Only","R & Python","R,Python & SPSS")
+
+df7 <- data.frame(Statistical_software, Year_2020,Year_2021)
+#View(df7)
+
+df7 = df7 %>%
+    gather(key=year, value=value, -Statistical_software)
+#View(df7)
+
+ggplot(data=df7, aes(x=Statistical_software, y=value, fill=Statistical_software)) +
+    facet_wrap(~year) +
+    geom_bar(stat='identity', position='dodge')+ 
+    theme(legend.position = "none")  +
+  theme(axis.text.x = element_text(angle = 45)) + theme(axis.title.x = element_blank())
+
+```
+
+### Programming Software Skills
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE,out.width="150%"}
+ 
+ps1 <- sum(df5$Java==1 & df5$Javascript ==0 & df5$Spark ==0,na.rm = TRUE)
+ps2 <- sum(df5$Java==0 & df5$Javascript ==1 & df5$Spark ==0,na.rm = TRUE)
+ps3 <- sum(df5$Java==0 & df5$Javascript ==0 & df5$Spark ==1,na.rm = TRUE)
+
+
+ps11 <- sum(df6$Java==1 & df6$Javascript ==0 & df6$Spark ==0,na.rm = TRUE)
+ps22 <- sum(df6$Java==0 & df6$Javascript ==1 & df6$Spark ==0,na.rm = TRUE)
+ps33 <- sum(df6$Java==0 & df6$Javascript ==0 & df6$Spark ==1,na.rm = TRUE)
+
+
+Year_2020 <- c(ps1,ps2,ps3)
+Year_2021 <- c(ps11,ps22,ps33)
+Programming_software <- c("Java Only", "JavaScript Only","Spark Only")
+
+df8 <- data.frame(Programming_software, Year_2020,Year_2021)
+#View(df7)
+
+df8 = df8 %>%
+    gather(key=year, value=value, -Programming_software)
+#View(df7)
+
+ggplot(data=df8, aes(x=Programming_software, y=value, fill=Programming_software)) +
+    facet_wrap(~year) +
+    geom_bar(stat='identity', position='dodge')+ 
+    theme(legend.position = "none")  +
+  theme(axis.text.x = element_text(angle = 45)) + theme(axis.title.x = element_blank())
+
+```
+
+# Soft Skills
+
+## Column {data-width="350"}
+
+### English Language Skills
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ 
+e1 <- sum(DStidy_new$`English Needed`==1,na.rm = TRUE)
+
+e2 <- sum(DStidy_new$`English Needed`==0,na.rm = TRUE)
+
+cnt_e <- c(e1,e2)
+english <- c("Needed", "Not Needed")
+
+df3 <- data.frame(english, cnt_e )
+
+df3 <- df3  %>%
+  mutate(pct = cnt_e  / sum(cnt_e ),
+         pctlabel = paste0(round(pct*100), "%"))
+
+
+ggplot(df3, 
+       aes(x = reorder(english, cnt_e),
+           y = cnt_e)) + 
+  geom_bar(stat = "identity", 
+           fill = "indianred3", 
+           color = "black") +
+  geom_text(aes(label = pctlabel), 
+            vjust = -0.25) +
+  labs(x = "English", 
+       y = "Count") 
+
+```
+
+## Column {data-width="350"}
+
+### Soft Skills
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ 
+s1 <- sum(DStidy_new$Presentation_Skills==1,na.rm = TRUE)
+
+s2 <- sum(DStidy_new$Communication==1,na.rm = TRUE)
+
+s3 <- sum(DStidy_new$Problem_Solving==1,na.rm = TRUE)
+
+s4 <- sum(DStidy_new$Team_Handling==1,na.rm = TRUE)
+
+cnt_s <- c(s1,s2,s3,s4)
+soft <- c("Presentation", "Communication","Problem Solving","Team Building")
+
+df4 <- data.frame(soft, cnt_s )
+
+df4 <- df4  %>%
+  mutate(pct = cnt_s  / sum(cnt_s),
+         pctlabel = paste0(round(pct*100), "%"))
+
+
+ggplot(df4, 
+       aes(x = reorder(soft, cnt_s),
+           y = cnt_s)) + 
+  geom_bar(stat = "identity", 
+           fill = "forestgreen", 
+           color = "black") +
+  geom_text(aes(label = pctlabel), 
+            vjust = -0.25) +
+  labs(x = "Soft Skill", 
+       y = "Count") + coord_flip()
+
+```
+
+# Relationship between Salary and Skills
+
+## Column {data-width="350"}
+
+### Salary vs Education Qualifications
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE,out.width="100%"}
+
+df9 <- DStidy_new  %>% filter(BSc_needed %in% 1) 
+df9 <- df9[df9$Job_Category != "Unimportant", ]
+g1 <- ggplot(df9 %>% filter(!is.na(Job_Category)) , aes(x =Job_Category , y = Salary)) + geom_boxplot(outlier.shape = NA)  +
+  theme(axis.text.x = element_text(angle = 45))  + 
+  labs(y = "Salary")  +
+  ggtitle("BSc Needed")+ theme(axis.title.x = element_blank()) +
+  coord_cartesian(ylim =  c(0, 400000))
+
+
+df10 <- DStidy_new  %>% filter(MSc_needed %in% 1) 
+df10 <- df10[df10$Job_Category != "Unimportant", ]
+g2 <- ggplot(df10 %>% filter(!is.na(Job_Category)) , aes(x =Job_Category , y = Salary)) + geom_boxplot(outlier.shape = NA)  +
+  theme(axis.text.x = element_text(angle = 45)) + 
+  labs(y = "Salary")  +
+  ggtitle("MSc Needed") + theme(axis.title.x = element_blank()) +
+  coord_cartesian(ylim =  c(0, 400000))
+
+
+df11 <- DStidy_new  %>% filter(BSc_needed %in% 1) 
+df11 <- df11[df11$Job_Category != "Unimportant", ]
+g3 <- ggplot(df11 %>% filter(!is.na(Job_Category)) , aes(x =Job_Category , y = Salary)) + geom_boxplot(outlier.shape = NA)  +
+  theme(axis.text.x = element_text(angle = 45)) + 
+  labs(y = "Salary")  +
+  ggtitle("PhD Needed")+ theme(axis.title.x = element_blank()) +
+  coord_cartesian(ylim =  c(0, 400000))
+
+ylab <- g1$labels$y
+g1$labels$y <- g2$labels$y  <- g3$labels$y <- " "
+
+
+g1+g2+g3
+grid::grid.draw(grid::textGrob(ylab, x = 0.02, rot = 90))
+
+```
+
+## Column {data-width="350"}
+
+### Salary vs Experience Level
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(DStidy_new %>% filter(!is.na(Experience_Category)) , aes(x =Experience_Category , y = Salary)) + geom_boxplot(outlier.shape = NA)  +
+  theme(axis.text.x = element_text(angle = 45))  + 
+  labs(x = "Experience level", y = "Salary")  +
+  ggtitle("Relationship between Experience level & Salary") +
+  coord_cartesian(ylim =  c(0, 2000000))
+
+```
