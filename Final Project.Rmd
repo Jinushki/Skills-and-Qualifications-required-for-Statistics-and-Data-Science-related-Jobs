@@ -1,0 +1,406 @@
+---
+title: "Skills and Qualifications required for Statistics and Data Science-related
+  Jobs"
+author: "Jinushki Saluwadana - AS2018317"
+date: "2022-11-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+#install.packages("devtools")
+devtools::install_github("thiyangt/DSjobtracker")
+library(DSjobtracker)
+library(skimr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(ggradar)
+library(patchwork)
+#View(DStidy)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+drop <- c("ID","Consultant", "DateRetrieved", "DatePublished", "Company", "Payment Frequency", "Search_Term", "URL","Knowledge_in","City","Educational_qualifications")
+DStidy_new <- DStidy[ , !(names(DStidy) %in% drop)]
+
+#View(DStidy_new)
+```
+
+![](https://149695847.v2.pressablecdn.com/wp-content/uploads/2020/06/data-science-job-titles.png)
+
+Data science is one of the fastest-growing, most critical fields of the past decade. With massive volumes of data created every day, there is an increasing need for people who can make sense of, and draw conclusions from, data. In fact, computer and information research jobs---including data scientist positions---are projected to grow 22% between 2020 and 2030, according to [the Bureau of Labor Statistics](https://www.bls.gov/ooh/computer-and-information-technology/computer-and-information-research-scientists.htm). 
+
+Since interest in data science took off a decade ago, data scientist [job satisfaction has also climbed](https://fortune.com/education/business/articles/2022/03/08/glassdoors-no-3-best-job-in-the-u-s-has-seen-job-growth-surge-480/). Glassdoor has listed data scientists as among the top three of the [50 Best Jobs in America](https://www.glassdoor.com/List/Best-Jobs-in-America-LST_KQ0,20.htm) for the past seven years in a row. 
+
+But how does the newest generation of workers feel about this burgeoning field? Gen Z considers the role of data scientist to be one of the most satisfying occupations, according to [a new Glassdoor report](https://www.glassdoor.com/research/gen-z-employees-entering-the-workforce/). Gen Z includes people born between 1997 and 2012. For this study, the only companies included were those with reviews left by U.S. full-time employees who are at least 18 years old. Students, interns and employees in the military were excluded.
+
+Despite young workers showing a strong preference for creative roles, data scientist is ranked No. 4---and the only other tech occupation ranked in the top 10 was IT specialist.
+
+## Exploratory Data Analysis
+
+The statistical consulting service, offered by the Department of Statistics, conducted an annual survey on "What skills and qualifications are required for statistics/data science-related jobs?" The purpose of the survey is to identify the types of skills and qualifications required for statistics and data science related job positions. The survey has currently been done twice. The following details pertain to the time of data collection:
+
+**Survey 1**
+
+Start date: August 21, 2020
+
+End date: September 5, 2020
+
+**Survey 2**
+
+Start date:September 5, 2021
+
+End date: November 5, 2021
+
+A total number of 812 observations were considered for this study. Both quantitiative and qualitative variables utilized in the study are given below. All the computations have been performed mainly using the statistical programming language R.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+skim(DStidy_new)
+
+```
+
+## Composition
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+category_count <- table(DStidy_new$Job_Category)
+category_count
+```
+
+| Job Category                    | Frequency |
+|---------------------------------|-----------|
+| Data Science                    | 210       |
+| Data Analyst                    | 23        |
+| Data Science & Data Engineering | 8         |
+| Not Specified                   | 18        |
+
+The study mainly focuses on three job categories and the composition of each job category is given as above.
+
+## Skills and Qualifications
+
+As the [demand for data scientists increases](https://www.datasciencedegreeprograms.net/faq/job-outlook-data-scientists/ "demand for data scientists increases"), the discipline presents an enticing career path for students and existing professionals. This includes those who are not data scientists but are obsessed with data and data science, which has left them asking about what data science skills and big data skills are needed to pursue careers in data science.  
+
+Leveraging the use of Big Data as an insight-generating engine has driven the demand for data scientists at the enterprise-level across all industry verticals. Whether it is to refine the process of product development, improve customer retention, or mine through data to find new business opportunities, organizations are increasingly relying on [data scientist](https://www.simplilearn.com/a-day-in-the-life-of-a-data-scientist-article "data scientist") skills to sustain, grow, and stay one step ahead of the competition. Also, in this article, we will dive into technical and non-technical skills required for data scientists.
+
+## Education Qualifications
+
+### Highest Education Qualification Required
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ 
+c1 <- sum(DStidy_new$BSc_needed==1 & DStidy_new$MSc_needed==0 & DStidy_new$PhD_needed==0,na.rm = TRUE)
+c2 <- sum(DStidy_new$BSc_needed==0 & DStidy_new$MSc_needed==1 & DStidy_new$PhD_needed==0,na.rm = TRUE)
+c3 <- sum(DStidy_new$BSc_needed==0 & DStidy_new$MSc_needed==0 & DStidy_new$PhD_needed==1,na.rm = TRUE)
+
+c4 <- sum(DStidy_new$BSc_needed==1 & DStidy_new$MSc_needed==1 & DStidy_new$PhD_needed==0,na.rm = TRUE)
+
+c5 <- sum(DStidy_new$BSc_needed==1 & DStidy_new$MSc_needed==0 & DStidy_new$PhD_needed==1,na.rm = TRUE)
+c6 <- sum(DStidy_new$BSc_needed==0 & DStidy_new$MSc_needed==1 & DStidy_new$PhD_needed==1,na.rm = TRUE)
+c7 <- sum(DStidy_new$BSc_needed==1 & DStidy_new$MSc_needed==1 & DStidy_new$PhD_needed==1,na.rm = TRUE)
+
+cnt <- c(c1,c2+c4,c3+c5+c6+c7)
+category <- c("BSc", "MSc","PhD")
+
+df1 <- data.frame(category, cnt)
+
+df1 <- df1  %>%
+  mutate(pct = cnt / sum(cnt),
+         pctlabel = paste0(round(pct*100), "%"))
+
+
+ggplot(df1, 
+       aes(x = reorder(category,cnt),
+           y = cnt)) + 
+  geom_bar(stat = "identity", 
+           fill = "indianred3", 
+           color = "black") +
+  geom_text(aes(label = pctlabel), 
+            vjust = -0.25) +
+  labs(x = "Category", 
+       y = "Count") 
+
+```
+
+According to the above bar chart, 59% of job candidate profiles require at least Bachelor's qualification to be employed in a data science related job. it is interesting to observe that there is a considerable amount of candidate profiles require higher education levels which indicates that to be employed in a data science related job, it is a mandatory requirement to have a proper education background.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+d1 <- DStidy_new  %>% filter(BSc_needed %in% 1)  %>% group_by(Job_Category) %>% count(BSc_needed)
+d1 <- d1[,-2]
+colnames(d1) <- c("Category", "BSc")
+#View(d1)
+
+d2 <- DStidy_new  %>% filter(MSc_needed %in% 1)  %>% group_by(Job_Category) %>% count(MSc_needed)
+d2 <- d2[,-2]
+colnames(d2) <- c("Category", "MSc")
+#View(d2)
+
+d3 <- DStidy_new  %>% filter(PhD_needed %in% 1)  %>% group_by(Job_Category) %>% count(PhD_needed)
+d3 <- d3[,-2]
+colnames(d3) <- c("Category", "PhD")
+#View(d3)
+
+df2 <- merge(d1, d2, by ="Category")
+df2 <- merge(df2, d3, by ="Category", all = TRUE)
+#View(df2)
+
+df2 <- df2[-c(4,5),]
+df2[is.na(df2)] <- 0
+#View(df2)
+
+
+#install.packages("remotes")
+#remotes::install_github("ricardo-bion/ggradar")
+
+#df2 %>% ggradar(grid.min = 0, grid.mid = 20, grid.max = 55) 
+
+#ggradar(df2)
+
+ggradar(
+  df2, 
+  values.radar = c("0", "20", "55"),
+  grid.min = 0, grid.mid = 20, grid.max = 55,
+  # Polygons
+  group.line.width = 1, 
+  group.point.size = 3,
+  # Background and grid lines
+  background.circle.colour = "white",
+  gridline.mid.colour = "grey"
+  ) + theme(legend.position = "bottom")
+```
+
+As per the above graph, it is evident that data science jobs are highly interested in profiles that have pursued a Masters degree in Science. Data analyst candidate profiles are more towards BSc degrees while data engineering jobs aspire the same level of qualification as data science jobs.
+
+## English Language Skills
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ 
+e1 <- sum(DStidy_new$`English Needed`==1,na.rm = TRUE)
+
+e2 <- sum(DStidy_new$`English Needed`==0,na.rm = TRUE)
+
+cnt_e <- c(e1,e2)
+english <- c("Needed", "Not Needed")
+
+df3 <- data.frame(english, cnt_e )
+
+df3 <- df3  %>%
+  mutate(pct = cnt_e  / sum(cnt_e ),
+         pctlabel = paste0(round(pct*100), "%"))
+
+
+ggplot(df3, 
+       aes(x = reorder(english, cnt_e),
+           y = cnt_e)) + 
+  geom_bar(stat = "identity", 
+           fill = "indianred3", 
+           color = "black") +
+  geom_text(aes(label = pctlabel), 
+            vjust = -0.25) +
+  labs(x = "English", 
+       y = "Count") 
+
+```
+
+According to stats, most of the data science related jobs do not require English language proficiency.
+
+## Soft Skills
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ 
+s1 <- sum(DStidy_new$Presentation_Skills==1,na.rm = TRUE)
+
+s2 <- sum(DStidy_new$Communication==1,na.rm = TRUE)
+
+s3 <- sum(DStidy_new$Problem_Solving==1,na.rm = TRUE)
+
+s4 <- sum(DStidy_new$Team_Handling==1,na.rm = TRUE)
+
+cnt_s <- c(s1,s2,s3,s4)
+soft <- c("Presentation", "Communication","Problem Solving","Team Building")
+
+df4 <- data.frame(soft, cnt_s )
+
+df4 <- df4  %>%
+  mutate(pct = cnt_s  / sum(cnt_s),
+         pctlabel = paste0(round(pct*100), "%"))
+
+
+ggplot(df4, 
+       aes(x = reorder(soft, cnt_s),
+           y = cnt_s)) + 
+  geom_bar(stat = "identity", 
+           fill = "indianred3", 
+           color = "black") +
+  geom_text(aes(label = pctlabel), 
+            vjust = -0.25) +
+  labs(x = "Soft Skill", 
+       y = "Count") + coord_flip()
+  
+
+
+```
+
+Most of the companies expect the candidates to have a good communication skill if they want to be employed in data science related jobs. Also they have a considerable concern towards Problem Solving and Team building skills.
+
+## Experience
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+positions <- c("Two or less years", "More than 2 and less than 5 years", "More than 5 and less than 10 years","More than 10 years","Unknown or Not needed")
+ 
+ggplot(DStidy_new) + 
+  geom_bar(aes(x=Experience_Category,
+                 fill = "indianred3"), 
+                 color = "black") +
+  labs(x = "Experience Level", 
+       y = "Count") + theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle = 45))+      scale_x_discrete(limits = positions)
+
+```
+
+It can be observed that it is better to have 2-5 years of experience in industry if you intend to build your career in Data science related field.
+
+## Software Skills
+
+### Statistical Software Skills
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ 
+df5 <- DStidy_new  %>% filter(year %in% 2020) 
+
+ss1 <- sum(df5$`Ms Excel`==1 & df5$R ==0 & df5$SPSS ==0 & df5$Python ==0,na.rm = TRUE)
+ss2 <- sum(df5$`Ms Excel`==0 & df5$R ==0 & df5$SPSS ==1 & df5$Python ==0,na.rm = TRUE)
+ss3 <- sum(df5$`Ms Excel`==0 & df5$R ==1 & df5$SPSS ==0 & df5$Python ==0,na.rm = TRUE)
+ss4 <- sum(df5$`Ms Excel`==0 & df5$R ==0 & df5$SPSS ==0 & df5$Python ==1,na.rm = TRUE)
+
+ss5 <- sum(df5$R ==1 & df5$SPSS ==0 & df5$Python ==1,na.rm = TRUE)
+ss6 <- sum(df5$R ==1 & df5$SPSS ==1 & df5$Python ==1,na.rm = TRUE)
+
+df6 <- DStidy_new  %>% filter(year %in% 2021) 
+
+ss11 <- sum(df6$`Ms Excel`==1 & df6$R ==0 & df6$SPSS ==0 & df6$Python ==0,na.rm = TRUE)
+ss22 <- sum(df6$`Ms Excel`==0 & df6$R ==0 & df6$SPSS ==1 & df6$Python ==0,na.rm = TRUE)
+ss33 <- sum(df6$`Ms Excel`==0 & df6$R ==1 & df6$SPSS ==0 & df6$Python ==0,na.rm = TRUE)
+ss44 <- sum(df6$`Ms Excel`==0 & df6$R ==0 & df6$SPSS ==0 & df6$Python ==1,na.rm = TRUE)
+
+ss55 <- sum(df6$R ==1 & df6$SPSS ==0 & df6$Python ==1,na.rm = TRUE)
+ss66 <- sum(df6$R ==1 & df6$SPSS ==1 & df6$Python ==1,na.rm = TRUE)
+
+Year_2020 <- c(ss1,ss2,ss3,ss4,ss5,ss6)
+Year_2021 <- c(ss11,ss22,ss33,ss44,ss55,ss66)
+Statistical_software <- c("Excel Only", "SPSS Only","R Only","Python Only","R & Python","R,Python & SPSS")
+
+df7 <- data.frame(Statistical_software, Year_2020,Year_2021)
+#View(df7)
+
+df7 = df7 %>%
+    gather(key=year, value=value, -Statistical_software)
+#View(df7)
+
+ggplot(data=df7, aes(x=Statistical_software, y=value, fill=Statistical_software)) +
+    facet_wrap(~year) +
+    geom_bar(stat='identity', position='dodge')+ 
+    theme(legend.position = "none")  +
+  theme(axis.text.x = element_text(angle = 45))
+
+```
+
+These graphs convey that it is a must for a data science enthusiast to learn Python as a Statistical Software while R is also perceived to be a demanding skill.
+
+### Programming Software
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ 
+ps1 <- sum(df5$Java==1 & df5$Javascript ==0 & df5$Spark ==0,na.rm = TRUE)
+ps2 <- sum(df5$Java==0 & df5$Javascript ==1 & df5$Spark ==0,na.rm = TRUE)
+ps3 <- sum(df5$Java==0 & df5$Javascript ==0 & df5$Spark ==1,na.rm = TRUE)
+
+
+ps11 <- sum(df6$Java==1 & df6$Javascript ==0 & df6$Spark ==0,na.rm = TRUE)
+ps22 <- sum(df6$Java==0 & df6$Javascript ==1 & df6$Spark ==0,na.rm = TRUE)
+ps33 <- sum(df6$Java==0 & df6$Javascript ==0 & df6$Spark ==1,na.rm = TRUE)
+
+
+Year_2020 <- c(ps1,ps2,ps3)
+Year_2021 <- c(ps11,ps22,ps33)
+Programming_software <- c("Java Only", "JavaScript Only","Spark Only")
+
+df8 <- data.frame(Programming_software, Year_2020,Year_2021)
+#View(df7)
+
+df8 = df8 %>%
+    gather(key=year, value=value, -Programming_software)
+#View(df7)
+
+ggplot(data=df8, aes(x=Programming_software, y=value, fill=Programming_software)) +
+    facet_wrap(~year) +
+    geom_bar(stat='identity', position='dodge')+ 
+    theme(legend.position = "none")  +
+  theme(axis.text.x = element_text(angle = 45))
+
+
+```
+
+It is evident that Spark is becoming popular in Data Science industry with the increasing demand it shows in 2021 rather than in 2020.
+
+## Relationship between Salary and Qualifications / Skills
+
+### Salary vs Education Qualifications
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE,out.width="100%"}
+
+df9 <- DStidy_new  %>% filter(BSc_needed %in% 1) 
+df9 <- df9[df9$Job_Category != "Unimportant", ]
+g1 <- ggplot(df9 %>% filter(!is.na(Job_Category)) , aes(x =Job_Category , y = Salary)) + geom_boxplot(outlier.shape = NA)  +
+  theme(axis.text.x = element_text(angle = 45))  + 
+  labs(y = "Salary")  +
+  ggtitle("BSc Needed")+ theme(axis.title.x = element_blank()) +
+  coord_cartesian(ylim =  c(0, 400000))
+
+
+df10 <- DStidy_new  %>% filter(MSc_needed %in% 1) 
+df10 <- df10[df10$Job_Category != "Unimportant", ]
+g2 <- ggplot(df10 %>% filter(!is.na(Job_Category)) , aes(x =Job_Category , y = Salary)) + geom_boxplot(outlier.shape = NA)  +
+  theme(axis.text.x = element_text(angle = 45)) + 
+  labs(y = "Salary")  +
+  ggtitle("MSc Needed") + theme(axis.title.x = element_blank()) +
+  coord_cartesian(ylim =  c(0, 400000))
+
+
+df11 <- DStidy_new  %>% filter(BSc_needed %in% 1) 
+df11 <- df11[df11$Job_Category != "Unimportant", ]
+g3 <- ggplot(df11 %>% filter(!is.na(Job_Category)) , aes(x =Job_Category , y = Salary)) + geom_boxplot(outlier.shape = NA)  +
+  theme(axis.text.x = element_text(angle = 45)) + 
+  labs(y = "Salary")  +
+  ggtitle("PhD Needed")+ theme(axis.title.x = element_blank()) +
+  coord_cartesian(ylim =  c(0, 400000))
+
+ylab <- g1$labels$y
+g1$labels$y <- g2$labels$y  <- g3$labels$y <- " "
+
+
+g1+g2+g3
+grid::grid.draw(grid::textGrob(ylab, x = 0.02, rot = 90))
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(DStidy_new %>% filter(!is.na(Experience_Category)) , aes(x =Experience_Category , y = Salary)) + geom_boxplot(outlier.shape = NA)  +
+  theme(axis.text.x = element_text(angle = 45))  + 
+  labs(x = "Experience level", y = "Salary")  +
+  ggtitle("Relationship between Experience level & Salary") +
+  coord_cartesian(ylim =  c(0, 2000000))
+```
+
+The above graphs show that your salary range gets increased if you can pursue an MSc in the category of Data Science.
+
+## Conclusions
+
+1.  Data Science is a highly educated field that you need a good educational background to develop your career in Data Science.
+2.  Communication is the most favorable skill out of Soft Skills.
+3.  Python is a mandatory Statistical Software in Data Science Industry.
+4.  Spark has an increasing trend in terms of Programming languages.
